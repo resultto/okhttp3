@@ -16,6 +16,7 @@
 package okhttp3;
 
 import java.io.Closeable;
+import java.io.EOFException;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
@@ -240,7 +241,7 @@ public final class Response implements Closeable {
    * No semantic validation is done, for example that {@code Basic} auth must have a {@code realm}
    * auth param, this is up to the caller that interprets these challenges.
    */
-  public List<Challenge> challenges() {
+  public List<Challenge> challenges() throws EOFException {
     String responseField;
     if (code == HTTP_UNAUTHORIZED) {
       responseField = "WWW-Authenticate";

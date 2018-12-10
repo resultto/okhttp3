@@ -25,12 +25,20 @@ public class MainActivity extends AppCompatActivity {
         tvSync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Request request = new Request.Builder().url("").build();
-                try {
-                    Response execute = mOkHttpClient.newCall(request).execute();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                final Request request = new Request.Builder().url("http://rap2api.taobao.org/app/mock/118200/SMSCode").build();
+                new Thread() {
+                    @Override
+                    public void run() {
+                        super.run();
+                        try {
+                            Response execute = mOkHttpClient.newCall(request).execute();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }.start();
+
             }
         });
 

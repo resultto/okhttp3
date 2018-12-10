@@ -15,6 +15,7 @@
  */
 package okhttp3;
 
+import java.io.EOFException;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -1694,8 +1695,12 @@ public final class HttpUrl {
         // Slow path: the character at i requires encoding!
         Buffer out = new Buffer();
         out.writeUtf8(input, pos, i);
-        canonicalize(out, input, i, limit, encodeSet, alreadyEncoded, strict, plusIsSpace,
-            asciiOnly, charset);
+        try {
+          canonicalize(out, input, i, limit, encodeSet, alreadyEncoded, strict, plusIsSpace,
+              asciiOnly, charset);
+        } catch (EOFException e) {
+          e.printStackTrace();
+        }
         return out.readUtf8();
       }
     }
@@ -1706,7 +1711,7 @@ public final class HttpUrl {
 
   static void canonicalize(Buffer out, String input, int pos, int limit, String encodeSet,
       boolean alreadyEncoded, boolean strict, boolean plusIsSpace, boolean asciiOnly,
-      Charset charset) {
+      Charset charset) throws EOFException {
     Buffer encodedCharBuffer = null; // Lazily allocated.
     int codePoint;
     for (int i = pos; i < limit; i += Character.charCount(codePoint)) {

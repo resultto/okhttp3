@@ -165,7 +165,7 @@ public final class HttpHeaders {
    *   WWW-Authenticate: Digest ,foo
    * }</pre>
    */
-  public static List<Challenge> parseChallenges(Headers responseHeaders, String headerName) {
+  public static List<Challenge> parseChallenges(Headers responseHeaders, String headerName) throws EOFException {
     List<Challenge> result = new ArrayList<>();
     for (int h = 0; h < responseHeaders.size(); h++) {
       if (headerName.equalsIgnoreCase(responseHeaders.name(h))) {
@@ -176,7 +176,7 @@ public final class HttpHeaders {
     return result;
   }
 
-  private static void parseChallengeHeader(List<Challenge> result, Buffer header) {
+  private static void parseChallengeHeader(List<Challenge> result, Buffer header) throws EOFException {
     String peek = null;
 
     while (true) {
@@ -236,7 +236,7 @@ public final class HttpHeaders {
   }
 
   /** Returns true if any commas were skipped. */
-  private static boolean skipWhitespaceAndCommas(Buffer buffer) {
+  private static boolean skipWhitespaceAndCommas(Buffer buffer) throws EOFException {
     boolean commaFound = false;
     while (!buffer.exhausted()) {
       byte b = buffer.getByte(0);
@@ -252,7 +252,7 @@ public final class HttpHeaders {
     return commaFound;
   }
 
-  private static int skipAll(Buffer buffer, byte b) {
+  private static int skipAll(Buffer buffer, byte b) throws EOFException {
     int count = 0;
     while (!buffer.exhausted() && buffer.getByte(0) == b) {
       count++;
@@ -266,7 +266,7 @@ public final class HttpHeaders {
    * each sequence. Returns the unescaped string, or null if the buffer isn't prefixed with a
    * double-quoted string.
    */
-  private static String readQuotedString(Buffer buffer) {
+  private static String readQuotedString(Buffer buffer) throws EOFException {
     if (buffer.readByte() != '\"') throw new IllegalArgumentException();
     Buffer result = new Buffer();
     while (true) {

@@ -30,11 +30,13 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
 import javax.annotation.Nullable;
 import javax.net.ssl.SSLPeerUnverifiedException;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
+
 import okhttp3.Address;
 import okhttp3.Call;
 import okhttp3.CertificatePinner;
@@ -50,9 +52,9 @@ import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.Route;
+import okhttp3.Version;
 import okhttp3.internal.Internal;
 import okhttp3.internal.Util;
-import okhttp3.internal.Version;
 import okhttp3.internal.http.HttpCodec;
 import okhttp3.internal.http.HttpHeaders;
 import okhttp3.internal.http1.Http1Codec;
