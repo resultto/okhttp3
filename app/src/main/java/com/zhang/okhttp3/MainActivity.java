@@ -3,7 +3,7 @@ package com.zhang.okhttp3;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.Button;
 
 import java.io.IOException;
 
@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
 
         mOkHttpClient = new OkHttpClient().newBuilder().build();
 
-        TextView tvSync = findViewById(R.id.tv_sync);
+        Button tvSync = findViewById(R.id.tv_sync);
         tvSync.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -193,7 +193,7 @@ public final class Dispatcher {
       AsyncCall asyncCall = executableCalls.get(i);
       asyncCall.executeOn(executorService());
     }
-
+    //同步与异步正在执行中的任务之和大于0，就返回true
     return isRunning;
   }
   /*
@@ -223,7 +223,7 @@ public final class Dispatcher {
   void finished(RealCall call) {
     finished(runningSyncCalls, call);
   }
-
+  //同步和异步都走这个方法
   private <T> void finished(Deque<T> calls, T call) {
     Runnable idleCallback;
     synchronized (this) {
@@ -231,9 +231,9 @@ public final class Dispatcher {
       if (!calls.remove(call)) throw new AssertionError("Call wasn't in-flight!");
       idleCallback = this.idleCallback;
     }
-
+    //同步的readyAsyncCalls里面始终只有一个任务，所以并不会真正执行。只有异步的readyAsyncCalls队列里有任务是才会真正执行。
     boolean isRunning = promoteAndExecute();
-
+    //如果isRunning返回false说明没有正在执行的任务了，
     if (!isRunning && idleCallback != null) {
       idleCallback.run();
     }
