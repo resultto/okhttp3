@@ -96,8 +96,9 @@ public final class BridgeInterceptor implements Interceptor {
         }
         //可以看到，当前拦截器的调用依赖于下一个拦截器的networkResponse返回。
         // 依次调用，直到调用完所有的拦截器，然后沿着相反的方法返回，直到返回最终的response。
-        Response networkResponse = chain.proceed(requestBuilder.build());
 //----------------------------------response----------------------------------------------
+        Response networkResponse = chain.proceed(requestBuilder.build());
+
         HttpHeaders.receiveHeaders(cookieJar, userRequest.url(), networkResponse.headers());
 
         Response.Builder responseBuilder = networkResponse.newBuilder()

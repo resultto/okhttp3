@@ -18,7 +18,6 @@ package okhttp3.internal.http;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import okhttp3.Call;
 import okhttp3.Connection;
 import okhttp3.EventListener;
