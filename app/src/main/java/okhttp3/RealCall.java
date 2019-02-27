@@ -126,7 +126,9 @@ final class RealCall implements Call {
         }
         return e;
     }
-
+    /*
+    处理内存泄露
+     */
     private void captureCallStackTrace() {
         Object callStackTrace = Platform.get().getStackTraceForCloseable("response.body().close()");
         retryAndFollowUpInterceptor.setCallStackTrace(callStackTrace);

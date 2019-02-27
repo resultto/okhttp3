@@ -180,7 +180,9 @@ public final class StreamAllocation {
             toClose = releaseIfNoNewStreams();
             if (this.connection != null) {
                 // We had an already-allocated connection and it's good.
+              //存在可使用的已分配资源，
                 result = this.connection;
+                //为null，则说明这个连接是有效的。
                 releasedConnection = null;
             }
             if (!reportedAcquired) {
@@ -189,6 +191,7 @@ public final class StreamAllocation {
             }
 
             if (result == null) {
+              //第一次连接池查找，没有提供路由信息。
                 // Attempt to get a connection from the pool.
                 Internal.instance.get(connectionPool, address, this, null);
                 if (connection != null) {
@@ -221,7 +224,7 @@ public final class StreamAllocation {
 
         synchronized (connectionPool) {
             if (canceled) throw new IOException("Canceled");
-
+            //遍历路由器进行二次查找
             if (newRouteSelection) {
                 // Now that we have a set of IP addresses, make another attempt at getting a connection from
                 // the pool. This could match due to connection coalescing.
@@ -242,7 +245,7 @@ public final class StreamAllocation {
                 if (selectedRoute == null) {
                     selectedRoute = routeSelection.next();
                 }
-
+                //如果还没有找到，就创建一个新的连接
                 // Create a connection and assign it to this allocation immediately. This makes it possible
                 // for an asynchronous cancel() to interrupt the handshake we're about to do.
                 route = selectedRoute;
@@ -257,7 +260,7 @@ public final class StreamAllocation {
             eventListener.connectionAcquired(call, result);
             return result;
         }
-
+        //新的连接连接路由器
         // Do TCP + TLS handshakes. This is a blocking operation.
         result.connect(connectTimeout, readTimeout, writeTimeout, pingIntervalMillis,
                 connectionRetryEnabled, call, eventListener);
@@ -266,13 +269,15 @@ public final class StreamAllocation {
         Socket socket = null;
         synchronized (connectionPool) {
             reportedAcquired = true;
-
+            //新的连接，放入线程池
             // Pool the connection.
             Internal.instance.put(connectionPool, result);
 
             // If another multiplexed connection to the same address was created concurrently, then
             // release this connection and acquire that one.
+          //如果是Http2连接，由于Http2连接应具有多路复用特性。
             if (result.isMultiplexed()) {
+              //确保http2的多路复用特性，重复的连接将被剔除。
                 socket = Internal.instance.deduplicate(connectionPool, address, this);
                 result = connection;
             }
